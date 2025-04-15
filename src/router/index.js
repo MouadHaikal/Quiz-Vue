@@ -1,6 +1,7 @@
 import { createWebHistory, createRouter } from 'vue-router'
 
 import Home from '../views/Home.vue'
+import AuthForm from "../components/AuthForm.vue";
 
 
 const routes = [
@@ -9,6 +10,12 @@ const routes = [
         name: 'home',
         component: Home
     },
+    {
+        path: '/register',
+        name: 'register',
+        component: AuthForm
+    }
+
 ]
 
 const router = createRouter({
