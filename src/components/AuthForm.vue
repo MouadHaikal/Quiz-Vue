@@ -169,7 +169,14 @@
           </button>
         </div>
       </form>
+
+
+      <div class="text-sm text-right">
+
+        <router-link to="/login" class="font-medium text-indigo-600 hover:text-indigo-500">Login</router-link>
+      </div>
     </div>
+
   </div>
 </template>
 
