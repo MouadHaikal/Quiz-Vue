@@ -4,6 +4,8 @@ import Home from '../views/Home.vue'
 import Explore from '../views/Explore.vue'
 import Profile from '../views/Profile.vue'
 import Leaderboard from '../views/Leaderboard.vue'
+import AuthForm from "../components/AuthForm.vue"
+import Login from "../components/Login.vue"
 
 
 const routes = [
@@ -27,6 +29,16 @@ const routes = [
         name: 'Leaderboard',
         component: Leaderboard
     },
+  {
+        path: '/register',
+        name: 'register',
+        component: AuthForm
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component: Login
+    },
 ]
 
 const router = createRouter({
@@ -35,3 +47,4 @@ const router = createRouter({
 })
 
 export default router;
+
