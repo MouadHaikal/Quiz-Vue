@@ -104,6 +104,8 @@
     import { auth } from '../composables/useFirestore';
     import { signInWithGoogle } from "../composables/useAuth.js";
 
+    import { useNotification } from '../composables/useNotification';
+    const { showNotification } = useNotification();
 
 
     const isLoading = ref(false);
@@ -111,14 +113,11 @@
     const email    = ref("");
     const password = ref("");
 
-    const loginError = ref("");
-
 
     async function handleSubmission() {
         isLoading.value = true;
 
         try{
-            loginError.value = "";
             await signInWithEmailAndPassword(auth, email.value, password.value);
 
             router.push({ name:'Explore' });
@@ -128,10 +127,10 @@
 
             switch (errorCode) {
                 case 'auth/invalid-credential':
-                    loginError.value = "Invalid credentials"
+                    showNotification("Invalid credentials", 'error');
                     break
                 default:
-                    loginError.value = "Login failed"
+                    showNotification("Login failed. Try again", 'error');
             }
 
         } finally{
