@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Explore from '../views/Explore.vue'
 import Profile from '../views/Profile.vue'
 import Leaderboard from '../views/Leaderboard.vue'
+import Quiz from '../views/Quiz.vue'
 
 import Signup from "../views/Signup.vue"
 import Login from "../views/Login.vue"
