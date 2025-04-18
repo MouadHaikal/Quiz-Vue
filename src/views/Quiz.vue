@@ -52,6 +52,9 @@ const difficulty = ref("0")
 
 
 
+
+
+
 const checkConnection = () => {
   errNetwork.value = !navigator.onLine;
 };

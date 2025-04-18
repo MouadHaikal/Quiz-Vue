@@ -5,8 +5,9 @@
 
 
 import { db } from '../composables/useFirestore.js'; // adjust if needed
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc,getDoc,doc } from 'firebase/firestore';
 import { getDocs } from 'firebase/firestore';
+
 
 
 
@@ -141,6 +142,32 @@ export const getQuizzes = async () => {
     return { fetchedQuizzes: [], error };
   }
 };
+
+
+//get the quiz by id
+export const getQuizById = async (id) => {
+  try {
+    console.log("Fetching quiz with Firestore doc ID:", id);
+
+    const docRef = doc(db, "Quizzes", id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      console.log("Quiz found:", docSnap.data());
+      return { id: docSnap.id, ...docSnap.data() };
+    } else {
+      console.warn("Quiz not found for ID:", id);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching quiz:", error);
+    throw error;
+  }
+};
+
+
+
+
 
 
 
