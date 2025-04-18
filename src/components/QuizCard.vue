@@ -1,4 +1,8 @@
 <template>
+
+
+  <!--Add three points that will displayed if u are a moderator to delete-->
+
   <div class="bg-gradient-to-br from-zinc-900 to-zinc-800 p-6 rounded-2xl border border-gray-700 shadow-lg hover:shadow-violet-500/20 transition-all duration-300 text-gray-100 w-full max-w-md mx-auto">
     <h3 class="text-2xl font-bold text-violet-400 font-winky mb-2">{{ quiz.Titre }}</h3>
     <p class="text-md text-gray-300 font-medium">

@@ -12,8 +12,8 @@ import { getDocs } from 'firebase/firestore';
 
 
 
-export const fetchAndSaveTrivia = async (difficulty ) => {
-  const response = await fetch(`https://opentdb.com/api.php?amount=10&difficulty=${difficulty}`);
+export const fetchAndSaveTrivia = async (difficulty,category ) => {
+  const response = await fetch(`https://opentdb.com/api.php?amount=10&difficulty=${difficulty}&category=${category}`);
   const data = await response.json();
 
   if (data.response_code !== 0) {
@@ -27,9 +27,10 @@ export const fetchAndSaveTrivia = async (difficulty ) => {
   }));
 
   const quiz = {
-    Titre: `Trivia (${difficulty})`,
+    Titre: formattedQuestions[0].question.slice(0,10).concat("..."),
     difficulty: difficulty,
-    questions: formattedQuestions
+    questions: formattedQuestions,
+    category : category
   };
 
   const docRef = await addDoc(collection(db, 'Quizzes'), quiz);
@@ -78,28 +79,41 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+async function retryFetchAndSave(difficulty, category, retries = 3) {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      return await fetchAndSaveTrivia(difficulty, category);
+    } catch (err) {
+      console.warn(`Retry ${attempt + 1} failed for [${difficulty}] category ${category}`);
+      await sleep(2000); // wait before retry
+    }
+  }
+  throw new Error(`All retries failed for [${difficulty}] category ${category}`);
+}
+
 export async function fetch_different_difficulties() {
-  const difficulties = ['easy', 'medium', 'hard'];
+  const difficulties = [ 'easy','medium','hard'];
+  const categories = Array.from({ length: 28 }, (_, i) => i + 9); // 9 to 36 inclusive
 
   for (const diff of difficulties) {
-    for (let i = 0; i < 3; i++) {
-      try {
-        await fetchAndSaveTrivia(diff);
-        console.log(`Saved quiz ${i + 1} for difficulty: ${diff}`);
-      } catch (err) {
-        console.error(`Error on quiz ${i + 1} (${diff}):`, err);
+    for (const cat of categories) {
+      for (let i = 0; i < 3; i++) {
+        try {
+          await retryFetchAndSave(diff, cat);
+          console.log(` Saved quiz ${i + 1} for difficulty: ${diff}, category: ${cat}`);
+        } catch (err) {
+          console.error(`Final failure for quiz ${i + 1} (${diff}, category: ${cat}):`, err);
+        }
+
+        await sleep(8000); // Wait after each call
       }
-
-      // Attente d'1 seconde entre chaque requête
-      await sleep(6000);
+      await sleep(2000); // Wait between categories
     }
-
-    // Attente de 2 secondes entre chaque niveau de difficulté
-    await sleep(2000);
   }
 
-  console.log("All quizzes fetched and saved!");
+  console.log("🎉 All quizzes fetched and saved!");
 }
+
 
 // le fetch des quizz dans la base de donné
 
