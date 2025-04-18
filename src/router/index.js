@@ -6,6 +6,7 @@ import Profile from '../views/Profile.vue'
 import Leaderboard from '../views/Leaderboard.vue'
 import AuthForm from "../components/AuthForm.vue"
 import Login from "../components/Login.vue"
+import Quiz from "../views/Quiz.vue"
 
 
 const routes = [
@@ -39,6 +40,12 @@ const routes = [
         name: 'login',
         component: Login
     },
+    {
+        path: '/quiz',
+        name: 'quiz',
+        component: Quiz
+    },
+
 ]
 
 const router = createRouter({

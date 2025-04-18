@@ -133,9 +133,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref} from 'vue'
 import { useRouter } from 'vue-router'
 import { signInWithGoogle } from "../composables/useAuth.js";
+
 
 const router = useRouter()
 const email = ref('')
@@ -145,6 +146,9 @@ const isLoading = ref(false)
 const isLoadingGoogle = ref(false)
 const error = ref('')
 const userCancelled = ref(false)
+
+
+
 
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value
