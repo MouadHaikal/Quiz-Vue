@@ -4,9 +4,9 @@ import Home from '../views/Home.vue'
 import Explore from '../views/Explore.vue'
 import Profile from '../views/Profile.vue'
 import Leaderboard from '../views/Leaderboard.vue'
-import AuthForm from "../components/AuthForm.vue"
-import Login from "../components/Login.vue"
-import Quiz from "../views/Quiz.vue"
+
+import Signup from "../views/Signup.vue"
+import Login from "../views/Login.vue"
 
 
 const routes = [
@@ -30,14 +30,14 @@ const routes = [
         name: 'Leaderboard',
         component: Leaderboard
     },
-  {
-        path: '/register',
-        name: 'register',
-        component: AuthForm
+    {
+        path: '/signup',
+        name: 'Signup',
+        component: Signup
     },
     {
         path: '/login',
-        name: 'login',
+        name: 'Login',
         component: Login
     },
     {
