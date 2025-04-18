@@ -14,7 +14,7 @@
         </strong>
 
         <div class="my-auto font-bold text-lg text-gray-100 flex justify-between items-center gap-9">
-            <router-link :to="{ name: 'Explore' }" class="navBarLink">
+            <router-link :to="{ name: loggedIn? 'Explore': 'Signup' }" class="navBarLink">
                 Explore
             </router-link>
 
@@ -22,19 +22,23 @@
                 Leaderboard
             </router-link>
 
-            <router-link :to="{ name: 'Profile' }" class="navBarLink">
+            <router-link v-if="loggedIn" :to="{ name: 'Profile' }" class="navBarLink">
                 Profile
             </router-link>
 
-            <router-link :to="{ name: 'Home' }" class="navBarLink text-orange-300 after:bg-orange-300">
-                Logout
+            <router-link v-if="loggedIn" :to="{ name: 'Home' }" class="navBarLink-orange" @click="handleLogout">
+                Log out
+            </router-link>
+
+            <router-link v-else :to="{ name: 'Login' }" class="navBarLink-violet">
+                Log in
             </router-link>
         </div>
     </div>
 </template>
 
 <script setup>
-    import { ref, onMounted, onUnmounted } from 'vue';
+    import { ref, onMounted, onUnmounted, computed } from 'vue';
 
     const isScrollingDown = ref(false);
     let lastScrollY = window.scrollY;
@@ -52,5 +56,17 @@
     onUnmounted(() => {
         window.removeEventListener('scroll', handleScroll);
     })
+
+    import { logoutUser } from "../composables/useAuth"
+
+    async function handleLogout(){
+        logoutUser();
+    }
+
+
+    import { useUser } from '../composables/useUser'
+    const { currentUser, isUserInitialized } = useUser();
+
+    const loggedIn = computed(() => {return isUserInitialized && currentUser.value!=null});
 </script>
 
