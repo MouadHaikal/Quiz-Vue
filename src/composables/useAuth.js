@@ -5,7 +5,7 @@ import {
     GoogleAuthProvider,
     signInWithPopup
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc,getDoc,updateDoc } from "firebase/firestore";
 import { signOut } from 'firebase/auth'
 
 
@@ -86,3 +86,35 @@ export const logoutUser = async () => {
         throw error
     }
 }
+
+
+
+export const update_after_quiz = async(user_id, quiz_id, score) => {
+  try {
+    // Reference to the user document
+    const userRef = doc(db, "Users", user_id);
+
+    // Get the current user data
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      const currentScore = userData.score || 0;
+      const newScore = currentScore + score;
+      const answeredQuizzes = userData.answered || [];
+      answeredQuizzes.push(quiz_id);
+      await updateDoc(userRef, {
+        score: newScore,
+        answered: answeredQuizzes
+      });
+
+     console.log("successful")
+    } else {
+      console.error("User document not found");
+
+    }
+  } catch (error) {
+    console.error("Error updating user after quiz:", error);
+
+  }
+};

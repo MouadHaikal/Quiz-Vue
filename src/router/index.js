@@ -8,7 +8,7 @@ import Quiz from '../views/Quiz.vue'
 
 import Signup from "../views/Signup.vue"
 import Login from "../views/Login.vue"
-
+import QuizzWith_Ans from "../components/QuizzWith_Ans.vue";
 
 const routes = [
     {
@@ -45,6 +45,12 @@ const routes = [
         path: '/quiz',
         name: 'quiz',
         component: Quiz
+    },
+    {
+        path: '/quiz_ans/:quiz_id',
+        props : true,
+        name: 'quiz_ans',
+        component: QuizzWith_Ans
     },
 
 ]
