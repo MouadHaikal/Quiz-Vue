@@ -1,15 +1,15 @@
 <template>
-    <div v-if="quiz" class="max-w-3xl mx-auto px-6 py-16 text-gray-100">
-        <h1 class="text-4xl font-bold mb-10 text-center text-violet-400">
-            {{ quiz.category }}
-            <span class="text-sm font-light text-gray-400 ml-2">({{ quiz.difficulty }})</span>
-        </h1>
+    <div v-if="quiz" class="max-w-3xl mx-auto px-6 py-16 text-white">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-violet-300">{{ quiz.category }}</h1>
+            <p class="text-sm text-gray-400 mt-1">Difficulty: {{ quiz.difficulty }}</p>
+        </div>
 
-        <div
-            v-if="currentQuestionIndex < quiz.questions.length"
-            class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-8 rounded-xl shadow-md space-y-10"
-        >
-            <div class="flex items-center justify-between text-sm text-gray-400 uppercase tracking-wide">
+        <!-- Question Card -->
+        <div v-if="currentQuestionIndex < quiz.questions.length" class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-lg space-y-8">
+
+            <div class="flex items-center justify-between text-xs text-gray-500 uppercase tracking-wider">
                 <span>Question</span>
                 <span class="font-semibold">{{ currentQuestionIndex + 1 }} / {{ quiz.questions.length }}</span>
             </div>
@@ -18,20 +18,26 @@
                 {{ currentQuestion.question }}
             </h2>
 
-            <div class="grid sm:grid-cols-2 gap-5">
+            <div class="grid sm:grid-cols-2 gap-4">
                 <button
                     v-for="(option, index) in shuffledOptions"
                     :key="index"
                     @click="selectAnswer(option)"
-                    class="transition-all duration-200 bg-violet-700 hover:bg-violet-600 px-6 py-3 rounded-lg text-left text-white font-medium focus:outline-none focus:ring-2 focus:ring-violet-400"
+                    :class="[
+                        'cursor-pointer px-5 py-3 text-left rounded-lg font-medium transition-colors duration-200 border',
+                        selected && option === currentQuestion.correct_answer ? 'bg-green-600/20 border-green-500 text-green-300' :
+                            selected && option === selected && option !== currentQuestion.correct_answer ? 'bg-red-600/20 border-red-500 text-red-300' :
+                                'bg-slate-800 hover:bg-slate-700 border-slate-700 text-white'
+                    ]"
                 >
                     {{ option }}
                 </button>
             </div>
         </div>
 
-        <div v-else class="text-center mt-16 space-y-8">
-            <h2 class="text-3xl font-bold text-green-400">Quiz Completed</h2>
+        <!-- Quiz Completion -->
+        <div v-else class="text-center mt-20 space-y-8">
+            <h2 class="text-3xl font-bold text-violet-400">Quiz Completed</h2>
             <p class="text-lg text-gray-300">
                 You answered
                 <span class="text-white font-semibold">{{ correctCount }}</span>
@@ -41,13 +47,14 @@
             </p>
             <button
                 @click="submitScore"
-                class="px-6 py-3 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg shadow-md transition-all duration-200"
+                class="fancyButton fancyButton-purple"
             >
                 Finish & Save Score
             </button>
         </div>
     </div>
 
+    <!-- Loading State -->
     <div v-else class="text-center text-gray-300 py-20 text-xl animate-pulse">
         Loading quiz...
     </div>
@@ -98,7 +105,7 @@
         setTimeout(() => {
             selected.value = null
             currentQuestionIndex.value++
-        }, 500)
+        }, 800)
     }
 
     async function submitScore() {
@@ -108,10 +115,3 @@
 
     onMounted(fetchQuiz)
 </script>
-
-<style scoped>
-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-</style>
