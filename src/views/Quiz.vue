@@ -1,39 +1,56 @@
 <template>
-    <div v-if="quiz" class="max-w-3xl mx-auto px-6 py-10 text-white">
-        <h1 class="text-3xl font-bold mb-4">Quiz: {{ quiz.category }} ({{ quiz.difficulty }})</h1>
+    <div v-if="quiz" class="max-w-3xl mx-auto px-6 py-16 text-gray-100">
+        <h1 class="text-4xl font-bold mb-10 text-center text-violet-400">
+            {{ quiz.category }}
+            <span class="text-sm font-light text-gray-400 ml-2">({{ quiz.difficulty }})</span>
+        </h1>
 
-        <div v-if="currentQuestionIndex < quiz.questions.length" class="space-y-6">
-            <h2 class="text-xl font-semibold">
-                Question {{ currentQuestionIndex + 1 }} / {{ quiz.questions.length }}
+        <div
+            v-if="currentQuestionIndex < quiz.questions.length"
+            class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-8 rounded-xl shadow-md space-y-10"
+        >
+            <div class="flex items-center justify-between text-sm text-gray-400 uppercase tracking-wide">
+                <span>Question</span>
+                <span class="font-semibold">{{ currentQuestionIndex + 1 }} / {{ quiz.questions.length }}</span>
+            </div>
+
+            <h2 class="text-2xl font-semibold text-amber-100 leading-snug">
+                {{ currentQuestion.question }}
             </h2>
 
-            <p class="text-lg">{{ currentQuestion.question }}</p>
-
-            <div class="grid grid-cols-2 gap-4 mt-4">
+            <div class="grid sm:grid-cols-2 gap-5">
                 <button
                     v-for="(option, index) in shuffledOptions"
                     :key="index"
-                    class="bg-violet-800 px-4 py-2 rounded hover:bg-violet-700"
                     @click="selectAnswer(option)"
+                    class="transition-all duration-200 bg-violet-700 hover:bg-violet-600 px-6 py-3 rounded-lg text-left text-white font-medium focus:outline-none focus:ring-2 focus:ring-violet-400"
                 >
                     {{ option }}
                 </button>
             </div>
         </div>
 
-        <div v-else class="text-center">
-            <h2 class="text-2xl font-bold text-green-400 mb-4">Quiz Complete! 🎉</h2>
-            <p>You got <span class="font-bold">{{ correctCount }}</span> out of {{ quiz.questions.length }} correct.</p>
+        <div v-else class="text-center mt-16 space-y-8">
+            <h2 class="text-3xl font-bold text-green-400">Quiz Completed</h2>
+            <p class="text-lg text-gray-300">
+                You answered
+                <span class="text-white font-semibold">{{ correctCount }}</span>
+                out of
+                <span class="text-white font-semibold">{{ quiz.questions.length }}</span>
+                correctly.
+            </p>
             <button
                 @click="submitScore"
-                class="mt-6 px-6 py-3 bg-green-600 hover:bg-green-500 rounded text-white font-semibold"
+                class="px-6 py-3 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg shadow-md transition-all duration-200"
             >
-                Finish and Save Score
+                Finish & Save Score
             </button>
         </div>
     </div>
 
-    <div v-else class="text-center text-white py-10">Loading quiz...</div>
+    <div v-else class="text-center text-gray-300 py-20 text-xl animate-pulse">
+        Loading quiz...
+    </div>
 </template>
 
 <script setup>
@@ -41,7 +58,7 @@
     import { useRoute, useRouter } from 'vue-router'
     import { doc, getDoc } from 'firebase/firestore'
     import { db } from '../composables/useFirestore'
-    import { finishQuiz } from '../composables/finishQuizLogic' // from previous step
+    import { finishQuiz } from '../composables/finishQuizLogic'
 
     const route = useRoute()
     const router = useRouter()
@@ -71,7 +88,7 @@
     }
 
     function selectAnswer(option) {
-        if (selected.value) return // prevent double clicks
+        if (selected.value) return
         selected.value = option
 
         if (option === currentQuestion.value.correct_answer) {
@@ -81,12 +98,12 @@
         setTimeout(() => {
             selected.value = null
             currentQuestionIndex.value++
-        }, 500) // small delay for feedback
+        }, 500)
     }
 
     async function submitScore() {
         await finishQuiz({ quizId, correctCount: correctCount.value })
-        router.push('/explore') // or results page
+        router.push('/explore')
     }
 
     onMounted(fetchQuiz)
