@@ -9,7 +9,6 @@ import Leaderboard from '../views/Leaderboard.vue'
 
 import Signup from "../views/Signup.vue"
 import Login from "../views/Login.vue"
-import QuizzWith_Ans from "../components/QuizzWith_Ans.vue";
 
 const routes = [
     {
