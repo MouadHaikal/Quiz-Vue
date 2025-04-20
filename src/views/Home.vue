@@ -29,8 +29,9 @@
                 </div>
 
                 <div class="flex justify-between items-center gap-12 mt-4">
-                    <router-link :to="{ name:'Signup' }" class="fancyButton fancyButton-purple flex items-center">
-                        Sign up for free &nbsp;&nbsp;›
+                    <router-link :to="{ name: loggedIn? 'Explore' : 'Signup' }" class="fancyButton fancyButton-purple flex items-center">
+                        
+                        {{ loggedIn?'Explore &nbsp;&nbsp;›':'Sign up for free &nbsp;&nbsp;›' }}
                     </router-link>
 
                     <a href="#cards" class="fancyButton fancyButton-orange flex items-center">
@@ -278,6 +279,8 @@
 </template>
 
 <script setup>
+    import { computed } from 'vue';
+
     const handleMouseMove = (e) => {
         const { currentTarget: target } = e;
 
@@ -288,6 +291,11 @@
         target.style.setProperty("--mouse-x", `${x}px`);
         target.style.setProperty("--mouse-y", `${y}px`);
     }
+
+    import { useUser } from '../composables/useUser'
+    const { currentUser, isUserInitialized } = useUser();
+
+    const loggedIn = computed(() => {return isUserInitialized && currentUser.value!=null});
 </script>
 
 <style scoped>

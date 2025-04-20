@@ -104,6 +104,8 @@
     import { auth } from '../composables/useFirestore';
     import { signInWithGoogle } from "../composables/useAuth.js";
 
+    import { useNotification } from '../composables/useNotification';
+    const { showNotification } = useNotification();
 
 
     const isLoading = ref(false);
@@ -111,16 +113,14 @@
     const email    = ref("");
     const password = ref("");
 
-    const loginError = ref("");
-
 
     async function handleSubmission() {
         isLoading.value = true;
 
         try{
-            loginError.value = "";
             await signInWithEmailAndPassword(auth, email.value, password.value);
 
+            showNotification("Successfully logged in", 'success');
             router.push({ name:'Explore' });
 
         } catch (error){
@@ -128,10 +128,10 @@
 
             switch (errorCode) {
                 case 'auth/invalid-credential':
-                    loginError.value = "Invalid credentials"
+                    showNotification("Invalid credentials", 'error');
                     break
                 default:
-                    loginError.value = "Login failed"
+                    showNotification("Login failed. Try again", 'error');
             }
 
         } finally{
@@ -150,9 +150,11 @@
             }
 
             if (user) {
+                showNotification("Successfully logged in", 'success');
                 router.push({ name:'Explore' });
             }
         } catch (err) {
+            showNotification("Login failed. Try again", 'error');
             console.error("Failed to sign in with Google:", err);
         } finally{
             isLoading.value = false;

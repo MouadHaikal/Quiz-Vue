@@ -18,7 +18,7 @@
                 Explore
             </router-link>
 
-            <router-link :to="{ name: 'Leaderboard' }" class="navBarLink">
+            <router-link :to="{ name: loggedIn? 'Leaderboard': 'Signup' }" class="navBarLink">
                 Leaderboard
             </router-link>
 
