@@ -2,9 +2,10 @@ import { createWebHistory, createRouter } from 'vue-router'
 
 import Home from '../views/Home.vue'
 import Explore from '../views/Explore.vue'
+import ExploreCategory from '../views/ExploreCategory.vue'
+import Quiz from '../views/Quiz.vue'
 import Profile from '../views/Profile.vue'
 import Leaderboard from '../views/Leaderboard.vue'
-import Quiz from '../views/Quiz.vue'
 
 import Signup from "../views/Signup.vue"
 import Login from "../views/Login.vue"
@@ -42,11 +43,15 @@ const routes = [
         component: Login
     },
     {
-        path: '/quiz',
-        name: 'quiz',
-        component: Quiz
+        path: '/explore/:category',
+        name: 'ExploreCategory',
+        component: ExploreCategory
     },
-
+    {
+        path: '/quiz/:id',
+        name: 'Quiz',
+        component: Quiz
+    }
 ]
 
 const router = createRouter({

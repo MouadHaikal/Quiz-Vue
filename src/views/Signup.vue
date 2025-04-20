@@ -145,6 +145,10 @@
     const router = useRouter();
 
 
+    import { useNotification } from '../composables/useNotification';
+    const { showNotification } = useNotification();
+
+
     const isLoading = ref(false);
 
     const fullName     = ref("");
@@ -179,7 +183,9 @@
                 username: username.value
             });
 
+            showNotification("Successfully logged in", 'success');
             router.push({ name:'Explore' });
+
         } catch (err) {
             console.error("Failed to sign up:", err);
         } finally{
@@ -198,9 +204,11 @@
             }
 
             if (user) {
+                showNotification("Successfully logged in", 'success');
                 router.push({ name:'Explore' });
             }
         } catch (err) {
+            showNotification("Login failed. Try again", 'error');
             console.error("Failed to sign in with Google:", err);
         } finally{
             isLoading.value = false;

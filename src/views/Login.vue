@@ -120,6 +120,7 @@
         try{
             await signInWithEmailAndPassword(auth, email.value, password.value);
 
+            showNotification("Successfully logged in", 'success');
             router.push({ name:'Explore' });
 
         } catch (error){
@@ -149,9 +150,11 @@
             }
 
             if (user) {
+                showNotification("Successfully logged in", 'success');
                 router.push({ name:'Explore' });
             }
         } catch (err) {
+            showNotification("Login failed. Try again", 'error');
             console.error("Failed to sign in with Google:", err);
         } finally{
             isLoading.value = false;

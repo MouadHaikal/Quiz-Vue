@@ -1,105 +1,100 @@
-
-
 <template>
-  <div>
-    <div v-if="loading" class="text-center text-gray-500">Loading quizzes...</div>
-    <div v-else-if="errNetwork" class="text-center text-red-500">No internet connection.</div>
-    <div v-else class="grid grid-cols-3 grid-flow-col gap-10">
-      <QuizCard
-        v-for="(quiz_fetched, index) in quizzes"
-        :key="index"
-        :quiz="quiz_fetched"
-      />
+    <div v-if="quiz" class="max-w-3xl mx-auto px-6 py-10 text-white">
+        <h1 class="text-3xl font-bold mb-4">Quiz: {{ quiz.category }} ({{ quiz.difficulty }})</h1>
+
+        <div v-if="currentQuestionIndex < quiz.questions.length" class="space-y-6">
+            <h2 class="text-xl font-semibold">
+                Question {{ currentQuestionIndex + 1 }} / {{ quiz.questions.length }}
+            </h2>
+
+            <p class="text-lg">{{ currentQuestion.question }}</p>
+
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <button
+                    v-for="(option, index) in shuffledOptions"
+                    :key="index"
+                    class="bg-violet-800 px-4 py-2 rounded hover:bg-violet-700"
+                    @click="selectAnswer(option)"
+                >
+                    {{ option }}
+                </button>
+            </div>
+        </div>
+
+        <div v-else class="text-center">
+            <h2 class="text-2xl font-bold text-green-400 mb-4">Quiz Complete! 🎉</h2>
+            <p>You got <span class="font-bold">{{ correctCount }}</span> out of {{ quiz.questions.length }} correct.</p>
+            <button
+                @click="submitScore"
+                class="mt-6 px-6 py-3 bg-green-600 hover:bg-green-500 rounded text-white font-semibold"
+            >
+                Finish and Save Score
+            </button>
+        </div>
     </div>
-  </div>
+
+    <div v-else class="text-center text-white py-10">Loading quiz...</div>
 </template>
 
-
 <script setup>
-import QuizCard from "../components/QuizCard.vue";
+    import { ref, computed, onMounted } from 'vue'
+    import { useRoute, useRouter } from 'vue-router'
+    import { doc, getDoc } from 'firebase/firestore'
+    import { db } from '../composables/useFirestore'
+    import { finishQuiz } from '../composables/finishQuizLogic' // from previous step
 
+    const route = useRoute()
+    const router = useRouter()
+    const quizId = decodeURIComponent(route.params.id)
 
-import {getQuizzes} from "../composables/QuizFetch.js";
-import {onMounted, ref,onBeforeUnmount} from "vue";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from 'firebase/firestore';
-import { db, auth } from "../composables/useFirestore";
+    const quiz = ref(null)
+    const currentQuestionIndex = ref(0)
+    const correctCount = ref(0)
+    const selected = ref(null)
 
-const quizzes = ref([])
-const loading = ref(true);
-const isAuth = ref(false);
-const currentUsername = ref('');
-const errNetwork = ref(!navigator.onLine);
+    const currentQuestion = computed(() => quiz.value.questions[currentQuestionIndex.value])
 
-const checkConnection = () => {
-  errNetwork.value = !navigator.onLine;
-};
+    const shuffledOptions = computed(() => {
+        if (!currentQuestion.value) return []
+        const all = [...currentQuestion.value.incorrect_answers, currentQuestion.value.correct_answer]
+        return all.sort(() => Math.random() - 0.5)
+    })
 
-
-onMounted(() => {
-  onAuthStateChanged(auth, async (user) => {
-    isAuth.value = !!user;
-
-    if (user) {
-      try {
-        const userDocRef = doc(db, 'Users', user.uid);
-        const userSnap = await getDoc(userDocRef);
-
-        if (userSnap.exists()) {
-          currentUsername.value = userSnap.data().username;
+    async function fetchQuiz() {
+        const quizRef = doc(db, 'QuizList', quizId)
+        const snap = await getDoc(quizRef)
+        if (snap.exists()) {
+            quiz.value = snap.data()
         } else {
-          console.warn('No user document found in Firestore.');
+            console.error('Quiz not found')
         }
-      } catch (err) {
-        console.error('Erreur lors de la récupération du username:', err);
-      }
-    }
-  });
-});
-
-
-
-onMounted(async () => {
-  window.addEventListener("online", checkConnection);
-  window.addEventListener("offline", checkConnection);
-
-  checkConnection(); // initial check
-
-  if (errNetwork.value) {
-    loading.value = false;
-    return;
-  }
-
-  try {
-    const {fetchedQuizzes, error} = await getQuizzes();
-
-    if (error) {
-      if (error.code === "auth/network-request-failed") {
-        errNetwork.value = true;
-        return;
-      }
     }
 
-    quizzes.value = fetchedQuizzes || [];
+    function selectAnswer(option) {
+        if (selected.value) return // prevent double clicks
+        selected.value = option
 
+        if (option === currentQuestion.value.correct_answer) {
+            correctCount.value++
+        }
 
+        setTimeout(() => {
+            selected.value = null
+            currentQuestionIndex.value++
+        }, 500) // small delay for feedback
+    }
 
-  } catch (error) {
-    console.error("Error fetching quizzes:", error);
-    errNetwork.value = true;
-  } finally {
-    loading.value = false;
-  }
-});
+    async function submitScore() {
+        await finishQuiz({ quizId, correctCount: correctCount.value })
+        router.push('/explore') // or results page
+    }
 
-onBeforeUnmount(() => {
-  window.removeEventListener("online", checkConnection);
-  window.removeEventListener("offline", checkConnection);
-});
-
+    onMounted(fetchQuiz)
 </script>
 
-
 <style scoped>
-
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 </style>
