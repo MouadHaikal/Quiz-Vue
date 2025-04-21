@@ -1,12 +1,10 @@
 <template>
     <div v-if="quiz" class="max-w-3xl mx-auto px-6 py-16 text-white">
-        <!-- Header -->
         <div class="text-center mb-12">
             <h1 class="text-4xl font-bold text-violet-300">{{ quiz.category }}</h1>
             <p class="text-sm text-gray-400 mt-1">Difficulty: {{ quiz.difficulty }}</p>
         </div>
 
-        <!-- Question Card -->
         <div v-if="currentQuestionIndex < quiz.questions.length" class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-lg space-y-8">
 
             <div class="flex items-center justify-between text-xs text-gray-500 uppercase tracking-wider">
@@ -35,7 +33,6 @@
             </div>
         </div>
 
-        <!-- Quiz Completion -->
         <div v-else class="text-center mt-20 space-y-8">
             <h2 class="text-3xl font-bold text-violet-400">Quiz Completed</h2>
             <p class="text-lg text-gray-300">
@@ -54,7 +51,6 @@
         </div>
     </div>
 
-    <!-- Loading State -->
     <div v-else class="text-center text-gray-300 py-20 text-xl animate-pulse">
         Loading quiz...
     </div>

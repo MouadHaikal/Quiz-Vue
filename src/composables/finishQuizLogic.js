@@ -27,13 +27,11 @@ export async function finishQuiz({ quizId, correctCount }) {
 
     const userRef = doc(db, 'Users', userId)
 
-    // Update user score and answered list
     await updateDoc(userRef, {
         score: increment(earnedPoints),
         answered: arrayUnion(quizId)
     })
 
-    // Update quiz stats: increment attempts and update avg correct
     const updatedAttempts = quizData.attempts + 1
     const totalCorrect = quizData.average_correct * quizData.attempts + correctCount
     const newAverageCorrect = totalCorrect / updatedAttempts

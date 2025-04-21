@@ -2,16 +2,13 @@
     <div class="min-h-screen text-white px-4 py-16 flex justify-center">
         <div class="w-full max-w-3xl space-y-10">
 
-            <!-- Header -->
             <div class="text-center">
                 <h1 class="text-4xl font-bold tracking-tight text-violet-300">Profile</h1>
                 <p class="text-gray-400 text-sm mt-1">Manage your account and view your stats</p>
             </div>
 
-            <!-- Card -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-md space-y-8">
 
-                <!-- Top Info -->
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                         <h2 class="text-xl font-semibold">{{ userData.username }}</h2>
@@ -25,7 +22,6 @@
                     </span>
                 </div>
 
-                <!-- Username Update -->
                 <div class="border-t border-slate-800 pt-6 space-y-4">
                     <label class="block text-sm text-gray-300">Change Username</label>
                     <div class="flex flex-col md:flex-row gap-3 md:items-center">
@@ -45,7 +41,6 @@
                     </div>
                 </div>
 
-                <!-- Stats -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-slate-800 pt-6">
                     <div class="rounded-lg border border-slate-800 bg-slate-800/40 p-4">
                         <p class="text-sm text-gray-400 mb-1">Total Score</p>

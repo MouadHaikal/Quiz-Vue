@@ -1,30 +1,8 @@
-// import { ref, readonly } from 'vue'
-// import { auth } from './useFirestore'
-// import { onAuthStateChanged } from 'firebase/auth'
-//
-// const currentUser = ref(null)
-// const isUserInitialized = ref(false)
-//
-// // One-time listener setup
-// onAuthStateChanged(auth, (user) => {
-//     currentUser.value = user
-//     isUserInitialized.value = true
-// })
-//
-// // Export readonly to prevent external mutation
-// export function useUser() {
-//     return {
-//         currentUser: readonly(currentUser),
-//         isUserInitialized: readonly(isUserInitialized),
-//         isLoggedIn: readonly(ref(() => !!currentUser.value))
-//     }
-// }
-// useUser.js
 import { ref, readonly } from 'vue';
 import { auth } from './useFirestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { getDoc, doc } from 'firebase/firestore';
-import { db } from './useFirestore'; // Import Firestore instance
+import { db } from './useFirestore';
 
 const currentUser = ref(null);
 const isUserInitialized = ref(false);
